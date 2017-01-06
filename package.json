@@ -1,0 +1,12 @@
+{
+  "name": "gifdawgg",
+  "version": "1.0.0",
+  "description": "This is a web-app that you can use to search for gifs online using your voice!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
