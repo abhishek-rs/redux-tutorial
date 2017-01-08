@@ -3,19 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Counter from '../client/Counter.jsx';
 import { createStore, combineReducers } from 'redux';
+import CounterReducer from '../reducers/CounterReducer.jsx';
+import AddRemoveCounterReducer from '../reducers/AddRemoveCounterReducer.jsx';
+import AddRemoveCounterComp from '../client/AddRemoveCounterComp';
+
 //import './db.js';
 
-const counter = (state = 0, action) => {
-  switch (action.type){
-      case 'INCREMENT' :
-        return state + 1;
-      case 'DECREMENT' :
-        return state - 1;
-      default:
-        return state;
-  }
-  console.log(state);
-}
+
 /*
 const createStore = (reducer) => {
   let state;
@@ -41,50 +35,53 @@ const createStore = (reducer) => {
   return {getState, dispatch, subscribe};
 };
 */
-const store = createStore(counter);
-console.log(store);
+
+console.log(CounterReducer);
+const counterStore = createStore(CounterReducer);
+const addRemoveCounterStore = createStore(AddRemoveCounterReducer);
+
+//console.log(store);
 //var Element = () => (<div>{store.getState()}</div>);
 /*
 ReactDOM.render (
   React.createElement(Element), document.getElementById('mount')
 );
 */
+var count = 0;/*
+var addRemoveCounterComp = addRemoveCounterStore.getState().map(
+  (s,i) => (<div key={i}>
+    <h1>{s}</h1>
+  <button onClick={() => addRemoveCounterStore.dispatch({id: i, type: 'INCREMENT_COUNTER'})}>+</button>
+  <button onClick={() => addRemoveCounterStore.dispatch({id: i, type: 'DECREMENT_COUNTER'})}>-</button>
+</div>
+  )
+);*/
 
 
 
 const render = () => {
   ReactDOM.render(
+    <div>
     <Counter
-      value={store.getState()}
-      onIncrement={ () => store.dispatch({type: 'INCREMENT'}) }
-      onDecrement={ () => store.dispatch({type: 'DECREMENT'}) }
-      />,
+      value={counterStore.getState()}
+      onIncrement={ () => counterStore.dispatch({type: 'INCREMENT'}) }
+      onDecrement={ () => counterStore.dispatch({type: 'DECREMENT'}) }
+      />
+    <AddRemoveCounterComp store={addRemoveCounterStore}/>
+    <button onClick = {() => addRemoveCounterStore.dispatch({type: 'ADD_COUNTER'})}>Add counter</button>
+    <button onClick = {() => addRemoveCounterStore.dispatch({type: 'REMOVE_COUNTER'})}>Remove counter</button>
+
+  </div>,
     document.getElementById('mount')
   );
 };
 
-store.subscribe(render);
+counterStore.subscribe(render);
+addRemoveCounterStore.subscribe(render);
 //ReactDOM.render();
 render();
 
-const addCounter = (list) => {
-   return [...list, 0];
-};
 
-const removeCounter = (list,index) => {
-  return [
-      ...list.slice(0, index),
-      ...list.slice(index + 1)
-  ];
-};
-
-const incrementCounter = (list, index) => {
-  return [
-    ...list.slice(0, index),
-    list[index] + 1,
-    ...list.slice(index+1)
-  ];
-};
 
 const toggleTodo = (todo) => {
   return Object.assign({}, todo, {
@@ -169,6 +166,27 @@ const todoApp = combineReducers({
   visibilityFilter: visibilityFilter
 });
 
+/*
+//combineReducers manual implementation
+
+const combineReducers = (reducers) => {
+  return (state = {}, action) => {
+    return Object.keys(reducers).reduce(
+      (nextState, key) => {
+        nextState[key] = reducers[key](
+          state[key],
+          action
+        );
+        return nextState;
+      },
+      {}
+    );
+  };
+};
+
+
+
+*/
 /*
 document.addEventListener('DOMContentLoaded', function() {
   ReactDOM.render(
